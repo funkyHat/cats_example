@@ -13,6 +13,6 @@ setup(
     ],
 
     install_requires=[
-        'factory_boy',
+        'fake-factory',
     ],
 )
