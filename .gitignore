@@ -1,0 +1,4 @@
+*inputs.yaml
+local-storage/
+
+*.py[co]
