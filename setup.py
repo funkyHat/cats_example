@@ -4,14 +4,12 @@ from setuptools import setup
 
 setup(
 
-    # Do not use underscores in the plugin name.
     name='cat_rescue',
 
     version='0.1',
 
-    # This must correspond to the actual packages in the plugin.
     py_modules=[
-        'owner',
+        'cat_rescue',
     ],
 
     install_requires=[
