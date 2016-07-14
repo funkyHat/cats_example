@@ -3,7 +3,7 @@ tosca_definitions_version: cloudify_dsl_1_3
 
 imports:
   - http://www.getcloudify.org/spec/cloudify/3.4/types.yaml
-  - ../plugin.yaml
+  - ../../aws-plugin/plugin.yaml
 
 
 inputs:
@@ -49,8 +49,8 @@ node_templates:
   cats_finder_lambda:
     type: cloudify.aws.nodes.LambdaFunction
     properties:
-      code_path: cat_rescue
-      handler: cat_rescue.owner.provide
+      code_path: git+https://github.com/funkyHat/cats_example.git
+      handler: cat_rescue.provide
       role: { get_input: role }
       aws_config: { get_input: aws_config }
 
