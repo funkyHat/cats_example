@@ -1,10 +1,8 @@
 from setuptools import setup
 
-# Replace the place holders with values for your project
 
 setup(
-
-    name='cat_rescue',
+    name='cat-rescue',
 
     version='0.1',
 
