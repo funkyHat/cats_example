@@ -20,6 +20,10 @@ outputs:
     description: dynamoDB table
     value:
       name: { get_attribute: [cats_table, name] }
+  cats:
+    description: the cats REST API
+    value:
+      url: { get_attribute: [cats, url] }
 
 
 node_templates:
@@ -67,6 +71,13 @@ node_templates:
     type: cloudify.aws.nodes.RestApi
     properties:
       aws_config: { get_input: aws_config }
+
+  cats_2:
+    type: cloudify.aws.nodes.RestApi
+    properties:
+      aws_config: { get_input: aws_config }
+      description: >
+        Trigger the apigateway creation & deletion throttling
 
   finder:
     type: cloudify.aws.nodes.RestApiResource
