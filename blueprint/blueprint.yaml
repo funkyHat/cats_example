@@ -15,17 +15,6 @@ inputs:
     required: false
 
 
-outputs:
-  cats_table:
-    description: dynamoDB table
-    value:
-      name: { get_attribute: [cats_table, name] }
-  cats:
-    description: the cats REST API
-    value:
-      url: { get_attribute: [cats, url] }
-
-
 node_templates:
   simple_lambda:
     type: cloudify.aws.nodes.LambdaFunction
@@ -72,6 +61,16 @@ node_templates:
     properties:
       aws_config: { get_input: aws_config }
 
+  prod:
+    type: cloudify.aws.nodes.RestApiSimpleDeployment
+    properties:
+      aws_config: { get_input: aws_config }
+    relationships:
+      - type: cloudify.aws.relationships.deployment_of_rest_api
+        target: cats
+      - type: cloudify.aws.relationships.deployment_depends_on_method
+        target: finder_POST
+
   cats_2:
     type: cloudify.aws.nodes.RestApi
     properties:
@@ -96,4 +95,17 @@ node_templates:
         target: finder
       - type: cloudify.aws.relationships.api_connected_to_lambda
         target: cats_finder_lambda
+
+
+outputs:
+  cats_table:
+    description: dynamoDB table
+    value:
+      name: { get_attribute: [cats_table, name] }
+  cats:
+    description: the cats REST API
+    value:
+      url: { concat: [{ get_attribute: [prod, url] },
+                      { get_attribute: [finder, path] },
+                      ]}
 
