@@ -8,4 +8,5 @@ def provide(event, context):
     print(event, context)
     owner = fake.name()
     print("{} is here and would like a cat".format(owner))
-    return {'cats': None}
+    return {'cats': None,
+            'event': event}
