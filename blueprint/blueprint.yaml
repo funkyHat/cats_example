@@ -36,8 +36,6 @@ node_templates:
     relationships:
       - type: cloudify.aws.relationships.dynamodbstream_connected_to_lambda
         target: cats_table
-        properties:
-          aws_config: { get_input: aws_config }
 
   cats_finder_lambda:
     type: cloudify.aws.nodes.LambdaFunction
