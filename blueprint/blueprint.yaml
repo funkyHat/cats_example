@@ -83,7 +83,7 @@ node_templates:
       - type: cloudify.aws.relationships.deployment_of_rest_api
         target: cats
       - type: cloudify.aws.relationships.deployment_depends_on_method
-        target: finder_POST
+        target: finder_GET
 
   cats_2:
     type: cloudify.aws.nodes.RestApi
@@ -100,7 +100,7 @@ node_templates:
       - type: cloudify.aws.relationships.resource_in_api
         target: cats
 
-  finder_POST:
+  finder_GET:
     type: cloudify.aws.nodes.RestApiMethod
     properties:
       request_parameters:
