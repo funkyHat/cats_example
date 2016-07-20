@@ -11,8 +11,24 @@ inputs:
     type: string
     default: arn:aws:iam::535075449278:role/lambda_basic_execution_with_extra
 
-  aws_config:
-    required: false
+  aws_access_key_id:
+    type: string
+    default: ''
+
+  aws_secret_access_key:
+    type: string
+    default: ''
+
+  ec2_region_name:
+    type: string
+    default: 'us-east-1'
+
+
+dsl_definitions:
+  aws_configuration: &aws_configuration
+    aws_access_key_id: { get_input: aws_access_key_id }
+    aws_secret_access_key: { get_input: aws_secret_access_key }
+    ec2_region_name: { get_input: ec2_region_name }
 
 
 node_templates:
@@ -23,7 +39,7 @@ node_templates:
       runtime: python2.7
       handler: code.main
       role: { get_input: role }
-      aws_config: { get_input: aws_config }
+      aws_config: *aws_configuration
 
   dynamo_cats_lambda:
     type: cloudify.aws.nodes.LambdaFunction
@@ -32,7 +48,7 @@ node_templates:
       runtime: python2.7
       handler: cats.streamhandler
       role: { get_input: role }
-      aws_config: { get_input: aws_config }
+      aws_config: *aws_configuration
     relationships:
       - type: cloudify.aws.relationships.dynamodbstream_connected_to_lambda
         target: cats_table
@@ -43,12 +59,12 @@ node_templates:
       code_path: git+https://github.com/funkyHat/cats_example.git
       handler: cat_rescue.provide
       role: { get_input: role }
-      aws_config: { get_input: aws_config }
+      aws_config: *aws_configuration
 
   cats_table:
     type: cloudify.aws.nodes.DynamoDBTable
     properties:
-      aws_config: { get_input: aws_config }
+      aws_config: *aws_configuration
       attribute_definitions:
         - [cat_name, S]
       key_schema:
@@ -57,12 +73,12 @@ node_templates:
   cats:
     type: cloudify.aws.nodes.RestApi
     properties:
-      aws_config: { get_input: aws_config }
+      aws_config: *aws_configuration
 
   prod:
     type: cloudify.aws.nodes.RestApiSimpleDeployment
     properties:
-      aws_config: { get_input: aws_config }
+      aws_config: *aws_configuration
     relationships:
       - type: cloudify.aws.relationships.deployment_of_rest_api
         target: cats
@@ -72,14 +88,14 @@ node_templates:
   cats_2:
     type: cloudify.aws.nodes.RestApi
     properties:
-      aws_config: { get_input: aws_config }
+      aws_config: *aws_configuration
       description: >
         Trigger the apigateway creation & deletion throttling
 
   finder:
     type: cloudify.aws.nodes.RestApiResource
     properties:
-      aws_config: { get_input: aws_config }
+      aws_config: *aws_configuration
     relationships:
       - type: cloudify.aws.relationships.resource_in_api
         target: cats
@@ -87,7 +103,7 @@ node_templates:
   finder_POST:
     type: cloudify.aws.nodes.RestApiMethod
     properties:
-      aws_config: { get_input: aws_config }
+      aws_config: *aws_configuration
     relationships:
       - type: cloudify.aws.relationships.method_in_resource
         target: finder
